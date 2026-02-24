@@ -7,11 +7,16 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
+                    <div class="mb-4">
+                        <button class="btn">
+                            Tổng danh mục <div class="badge badge-sm badge-secondary">{{ $totalCategories > 0 ? '+' . $totalCategories : 'Không có' }} </div>
+                        </button>
+                    </div>
                     <a href="{{ route('admin.categories.create') }}"
                     class="btn btn-primary mb-4 text-white">
-                        + Thêm danh mục
+                        <i class="fa-solid fa-plus"></i>Thêm danh mục
                     </a>
                     <input type="text"
                         id="search"
@@ -25,6 +30,7 @@
                                 <tr>
                                     <th>#</th>
                                     <th>Tên danh mục</th>
+                                    <th>Số lượng sản phẩm</th>
                                     <th>Slug</th>
                                     <th>Trạng thái</th>
                                     <th>Hành động</th>
