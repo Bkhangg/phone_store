@@ -42,13 +42,13 @@
                                     class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md
                                         font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-500
                                         focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2
-                                        transition ease-in-out duration-150">
-                                    Lưu danh mục
+                                        transition ease-in-out duration-150" style="margin-right: 2px;">
+                                    <i class="fa-solid fa-floppy-disk" style="margin-right: 2px;"></i> <font >Lưu danh mục</font>
                                 </button>
 
                                 <a href="{{ route('admin.categories.index') }}"
                                    class="btn btn-sm btn-error text-white">
-                                    Quay lại
+                                    <i class="fa-solid fa-backward"></i>Quay lại
                                 </a>
                             </div>
                         </fieldset>

@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\ProfileController;
+use App\Models\ProductImage;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -18,6 +19,8 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
 
     Route::resource('categories', CategoryController::class);
     Route::resource('products', ProductController::class);
+    Route::delete('product-images/{id}', [ProductController::class,'destroyImage'])
+        ->name('product-images.destroy');
 });
 
 Route::middleware(['auth'])->group(function () {
