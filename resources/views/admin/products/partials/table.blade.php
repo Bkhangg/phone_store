@@ -53,22 +53,31 @@
                 </dialog>
             </td>
 
-            <td class="font-bold">{{ $product->name }}</td>
+            <td class="font-bold max-w-[300px]">
+                <p class="line-clamp-3">
+                    {{ $product->name }}
+                </p>
+            </td>
             <td>{{ $product->category->name ?? 'Chưa có' }}</td>
             <td>
                 {{ number_format((int) str_replace(['.', ','], '', $product->price)) }} đ
             </td>
 
             <td>
-                @if($product->status)
-                    <span class="badge badge-success text-white text-[11px] px-1.5">
-                        <i class="fa-solid fa-eye text-xs"></i>Hiện
-                    </span>
-                @else
-                    <span class="badge badge-error text-white text-[11px] px-1.5">
-                        <i class="fa-solid fa-ban"></i>Ẩn
-                    </span>
-                @endif
+                <a href="{{ route('admin.products.toggleStatus', $product->id) }}"
+                onclick="return confirm('Bạn có muốn đổi trạng thái sản phẩm này không?')">
+
+                    @if($product->status == 1)
+                        <span class="badge badge-success text-white text-[11px] px-1.5 cursor-pointer">
+                            <i class="fa-solid fa-eye text-xs"></i> Hiện
+                        </span>
+                    @else
+                        <span class="badge badge-error text-white text-[11px] px-1.5 cursor-pointer">
+                            <i class="fa-solid fa-ban"></i> Ẩn
+                        </span>
+                    @endif
+
+                </a>
             </td>
 
             {{-- MÔ TẢ --}}

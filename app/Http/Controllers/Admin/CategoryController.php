@@ -79,6 +79,17 @@ class CategoryController extends Controller
             ->with('success','Cập nhật danh mục thành công');
     }
 
+    public function toggleStatus($id)
+    {
+        $cat = Category::findOrFail($id);
+
+        // đảo trạng thái
+        $cat->status = $cat->status == 1 ? 0 : 1;
+        $cat->save();
+
+        return back()->with('success', 'Đã cập nhật trạng thái danh mục');
+    }
+
     public function destroy(Category $category)
     {
         // Nếu còn sản phẩm → không cho xóa
