@@ -15,6 +15,21 @@ class AdminMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
+        if (!auth()->check()) {
+            return redirect()->route('login');
+        }
+
+        if (auth()->user()->role !== 'admin') {
+            auth()->logout(); // logout luôn
+            return redirect('/')->with('error', 'Bạn không có quyền truy cập');
+        }
+
+        if(auth()->user()->status == 0){
+            auth()->logout();
+            return redirect()->route('login')
+                ->withErrors(['email'=>'Tài khoản đã bị khóa']);
+        }
+
         return $next($request);
     }
 }
