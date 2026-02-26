@@ -1,3 +1,4 @@
+@if (in_array(auth()->user()->role, ['admin', 'staff']))
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl">Sửa sản phẩm</h2>
@@ -123,6 +124,7 @@
         });
     </script>
 </x-app-layout>
+@endif
 
 {{-- Script để xem trước ảnh --}}
 <script>

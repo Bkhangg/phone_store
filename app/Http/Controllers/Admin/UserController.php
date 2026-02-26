@@ -49,7 +49,7 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|min:6|confirmed',
-            'role' => 'required',
+            'role' => 'required|in:admin,staff,user',
             'status' => 'required|boolean',
         ],[
             'name.required' => 'Vui lòng nhập tên',
