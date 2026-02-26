@@ -12,33 +12,32 @@ Route::get('/', function () {
 });
 
 // Dashboard và các route quản trị viên
-Route::middleware(['auth', 'verified', 'admin', 'check.status'])
+Route::middleware(['auth', 'verified', 'check.status'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
 
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
+        Route::get('/dashboard', function () {
+            return view('dashboard');
+        })->name('dashboard');
 
-    Route::resource('categories', CategoryController::class);
-    Route::get('/admin/categories/toggle-status/{id}', [CategoryController::class, 'toggleStatus'])
-    ->name('categories.toggleStatus');
+        Route::resource('categories', CategoryController::class);
+        Route::get('categories/toggle-status/{id}',
+            [CategoryController::class, 'toggleStatus']
+        )->name('categories.toggleStatus');
 
-    Route::resource('products', ProductController::class);
-    Route::get('/admin/products/toggle-status/{id}', [ProductController::class, 'toggleStatus'])
-    ->name('products.toggleStatus');
+        Route::resource('products', ProductController::class);
+        Route::get('products/toggle-status/{id}',
+            [ProductController::class, 'toggleStatus']
+        )->name('products.toggleStatus');
 
-    Route::resource('users', UserController::class);
+        Route::delete('product-images/{id}',
+            [ProductController::class,'destroyImage']
+        )->name('product-images.destroy');
 
-    Route::prefix('admin')->middleware(['auth','admin'])->group(function () {
-        Route::post('/users/{id}/ban', [UserController::class,'ban'])->name('users.ban');
-        Route::post('/users/{id}/unban', [UserController::class,'unban'])->name('users.unban');
-    });
-
-    Route::delete('product-images/{id}',
-        [ProductController::class,'destroyImage']
-    )->name('product-images.destroy');
+        Route::resource('users', UserController::class);
+        Route::prefix('admin')->middleware(['auth','admin'])->group(function () { Route::post('/users/{id}/ban', [UserController::class,'ban'])->name('users.ban');
+        Route::post('/users/{id}/unban', [UserController::class,'unban'])->name('users.unban'); });
 });
 
 Route::middleware(['auth'])->group(function () {

@@ -19,15 +19,17 @@ class AdminMiddleware
             return redirect()->route('login');
         }
 
-        if (auth()->user()->role !== 'admin') {
-            auth()->logout(); // logout luôn
-            return redirect('/')->with('error', 'Bạn không có quyền truy cập');
-        }
-
-        if(auth()->user()->status == 0){
+        // ƯU TIÊN: nếu bị khóa
+        if (auth()->user()->status == 0) {
             auth()->logout();
             return redirect()->route('login')
-                ->withErrors(['email'=>'Tài khoản đã bị khóa']);
+                ->withErrors(['email' => 'Tài khoản đã bị khóa']);
+        }
+
+        // Cho phép admin và staff
+        if (!in_array(auth()->user()->role, ['admin', 'staff'])) {
+            auth()->logout();
+            return redirect('/')->with('error', 'Bạn không có quyền truy cập');
         }
 
         return $next($request);

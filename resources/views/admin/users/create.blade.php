@@ -1,3 +1,4 @@
+@if (auth()->user()->role == 'admin')
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl">Thêm thành viên</h2>
@@ -40,6 +41,7 @@
                                     <select name="role" class="select select-bordered w-full">
                                         <option value="">-- Chọn quyền --</option>
                                         <option value="admin">Admin</option>
+                                        <option value="staff">Staff</option>
                                         <option value="user">User</option>
                                     </select>
                                     @error('role') <p class="text-red-500">{{ $message }}</p> @enderror
@@ -62,7 +64,7 @@
                                      Thêm thành viên
                                 </button>
 
-                                <a href="{{ route('admin.products.index') }}"
+                                <a href="{{ route('admin.users.index') }}"
                                 class="btn btn-sm btn-error text-white w-full sm:w-auto">
                                     Quay lại
                                 </a>
@@ -76,3 +78,4 @@
         </div>
     </div>
 </x-app-layout>
+@endif

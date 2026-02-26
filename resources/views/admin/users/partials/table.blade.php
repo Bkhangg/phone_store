@@ -17,6 +17,8 @@
             <td>
                 @if($user->role == 'admin')
                     <span class="badge badge-error text-white">Admin</span>
+                @elseif($user->role == 'staff')
+                    <span class="badge badge-warning text-white">Staff</span>
                 @else
                     <span class="badge badge-info text-white">User</span>
                 @endif
