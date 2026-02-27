@@ -121,6 +121,7 @@
                     padding: 6px; border: none; border-radius: 4px;"><i class="fa-solid fa-trash"></i></button>
                 </form>
             </td>
+
         </tr>
         @endforeach
     </tbody>
