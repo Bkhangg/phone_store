@@ -26,7 +26,9 @@
                     placeholder="Tìm sản phẩm..."
                     class="input input-bordered w-full max-w-xs mb-4">
 
-
+                    <a href="{{ route('admin.products.trash') }}" class="btn btn-info mb-4 text-white">
+                        🗑 Thùng rác
+                    </a>
 
                     <div class="overflow-x-auto">
                         <div id="product-table">

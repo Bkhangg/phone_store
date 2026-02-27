@@ -3,9 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Product extends Model
 {
+    use SoftDeletes;
+
     // Các trường có thể gán hàng loạt
     protected $fillable = [
         'category_id','name','slug','price','thumbnail','description','status'

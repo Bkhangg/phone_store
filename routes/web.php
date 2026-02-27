@@ -17,24 +17,34 @@ Route::middleware(['auth', 'verified', 'check.status'])
     ->name('admin.')
     ->group(function () {
 
+        // Dashboard
         Route::get('/dashboard', function () {
             return view('dashboard');
         })->name('dashboard');
 
+        // Các route cho danh mục
         Route::resource('categories', CategoryController::class);
         Route::get('categories/toggle-status/{id}',
             [CategoryController::class, 'toggleStatus']
         )->name('categories.toggleStatus');
 
+        // Các route cho sản phẩm
         Route::resource('products', ProductController::class);
         Route::get('products/toggle-status/{id}',
             [ProductController::class, 'toggleStatus']
         )->name('products.toggleStatus');
 
+        // Route cho xóa ảnh sản phẩm
         Route::delete('product-images/{id}',
             [ProductController::class,'destroyImage']
         )->name('product-images.destroy');
 
+        // Thêm route cho soft delete
+        Route::get('products-trash', [ProductController::class,'trash'])->name('products.trash');
+        Route::post('products-restore/{id}', [ProductController::class,'restore'])->name('products.restore');
+        Route::delete('products-force-delete/{id}', [ProductController::class,'forceDelete'])->name('products.forceDelete');
+
+        // Các route cho người dùng
         Route::resource('users', UserController::class);
         Route::prefix('admin')->middleware(['auth','admin'])->group(function () { Route::post('/users/{id}/ban', [UserController::class,'ban'])->name('users.ban');
         Route::post('/users/{id}/unban', [UserController::class,'unban'])->name('users.unban'); });

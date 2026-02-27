@@ -175,8 +175,36 @@ class ProductController extends Controller
 
     public function destroy(Product $product)
     {
-        $product->delete();
-        return back()->with('success', 'Xóa sản phẩm thành công');
+        $product->delete(); // soft delete
+        return back()->with('success','Đã chuyển sản phẩm vào thùng rác');
+    }
+
+    public function trash()
+    {
+        $products = Product::onlyTrashed()->paginate(5);
+        return view('admin.products.trash', compact('products'));
+    }
+
+    public function restore($id)
+    {
+        $product = Product::onlyTrashed()->findOrFail($id);
+        $product->restore();
+
+        return redirect()->route('admin.products.index')->with('success','Khôi phục sản phẩm thành công');
+    }
+
+    public function forceDelete($id)
+    {
+        $product = Product::onlyTrashed()->findOrFail($id);
+
+        // xóa ảnh nếu muốn
+        if ($product->thumbnail) {
+            Storage::disk('public')->delete($product->thumbnail);
+        }
+
+        $product->forceDelete();
+
+        return back()->with('success','Đã xóa vĩnh viễn sản phẩm');
     }
 
     public function destroyImage($id)
