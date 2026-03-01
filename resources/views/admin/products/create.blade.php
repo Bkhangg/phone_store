@@ -171,25 +171,3 @@ document.getElementById('imagesInput').addEventListener('change', function(e){
 });
 </script>
 
-{{-- Nhập giá tiền format --}}
-<script>
-const priceInput = document.getElementById('price');
-
-priceInput.addEventListener('input', function (e) {
-    let value = this.value.replace(/\D/g, ''); // bỏ ký tự không phải số
-
-    if (value === '') {
-        this.value = '';
-        return;
-    }
-
-    // format có dấu chấm
-    this.value = new Intl.NumberFormat('vi-VN').format(value);
-});
-
-// Trước khi submit form → bỏ dấu chấm
-document.querySelector('form').addEventListener('submit', function () {
-    let raw = priceInput.value.replace(/\./g, '');
-    priceInput.value = raw;
-});
-</script>
