@@ -23,12 +23,13 @@
             {{-- Giá --}}
             <div>
                 <label class="label">Giá</label>
-                <input type="text" id="price_display"
-                    value="{{ number_format(old('price', $product->price)) }}"
-                    class="input input-bordered w-full">
-
-                <input type="hidden" name="price" id="price">
+                <input type="text"
+                    value="{{ old('price', $product->price) }}"
+                    class="input input-bordered w-full" name="price">
             </div>
+            @error('price')
+                <span class="text-red-500 text-xs">{{ $message }}</span>
+            @enderror
 
             {{-- Danh mục --}}
             <div>
@@ -158,45 +159,4 @@
     });
 </script>
 
-{{-- Nhập giá tiền format --}}
-<script>
-const priceInput = document.getElementById('price');
 
-priceInput.addEventListener('input', function (e) {
-    let value = this.value.replace(/\D/g, ''); // bỏ ký tự không phải số
-
-    if (value === '') {
-        this.value = '';
-        return;
-    }
-
-    // format có dấu chấm
-    this.value = new Intl.NumberFormat('vi-VN').format(value);
-});
-
-// Trước khi submit form → bỏ dấu chấm
-document.querySelector('form').addEventListener('submit', function () {
-    let raw = priceInput.value.replace(/\./g, '');
-    priceInput.value = raw;
-});
-</script>
-
-{{-- JS format + strip dấu chấm giá tiền --}}
-<script>
-const priceDisplay = document.getElementById('price_display');
-const priceHidden = document.getElementById('price');
-
-function formatNumber(val){
-    val = val.replace(/\D/g,'');
-    return val.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-}
-
-// set giá trị ban đầu cho hidden
-priceHidden.value = priceDisplay.value.replace(/\./g,'');
-
-priceDisplay.addEventListener('input', function(){
-    let raw = this.value.replace(/\./g,'');
-    this.value = formatNumber(raw);
-    priceHidden.value = raw;
-});
-</script>

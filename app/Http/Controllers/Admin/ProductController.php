@@ -3,16 +3,28 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Product\StoreProductRequest;
+use App\Http\Requests\Product\UpdateProductRequest;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\ProductImage;
 use App\Models\User;
+use App\Services\ProductService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
+
+    protected $productService;
+
+    public function __construct(ProductService $productService)
+    {
+        $this->productService = $productService;
+    }
+
+
     private function generateUniqueSlug($name)
     {
         $slug = Str::slug($name);
@@ -55,59 +67,14 @@ class ProductController extends Controller
         return view('admin.products.create',compact('categories'));
     }
 
-    public function store(Request $request)
+    public function store(StoreProductRequest $request)
     {
-        if ($request->filled('price')) {
-            $request->merge([
-                'price' => str_replace([',','.'], '', $request->price)
-            ]);
-        }
 
-        $request->validate([
-            'name' => 'required|unique:products,name',
-            'price' => 'required|numeric|min:0',
-            'category_id' => 'required',
-            'thumbnail' => 'required|image',
-            'images.*' => 'image',
-            'description' => 'nullable|string'
-        ],
-        [
-            'name.required' => 'Vui lòng nhập tên sản phẩm',
-            'name.unique' => 'Tên sản phẩm đã tồn tại',
-            'price.required' => 'Vui lòng nhập giá sản phẩm',
-            'price.numeric' => 'Giá phải là số',
-            'category_id.required' => 'Vui lòng chọn danh mục',
-            'thumbnail.required' => 'Vui lòng chọn ảnh chính',
-            'thumbnail.image' => 'Ảnh chính phải là file hình ảnh',
-            'images.*.image' => 'Ảnh phụ phải là file hình ảnh',
-            'description.string' => 'Mô tả không hợp lệ'
-        ]);
-
-        $thumb = $request->file('thumbnail')->store('products','public');
-
-        $slug = $this->generateUniqueSlug($request->name);
-
-        $product = Product::create([
-            'name' => $request->name,
-            'slug' => $slug,
-            'category_id' => $request->category_id,
-            'price' => $request->price,
-            'thumbnail' => $thumb,
-            'description' => $request->description,
-            'status' => $request->status ?? 1
-        ]);
-
-        if($request->hasFile('images')){
-            foreach($request->file('images') as $img){
-                $path = $img->store('products','public');
-                ProductImage::create([
-                    'product_id'=>$product->id,
-                    'image_path'=>$path
-                ]);
-            }
-        }
+        // Tạo sản phẩm qua service
+        $this->productService->createProduct($request);
 
         return redirect()->route('admin.products.index')->with('success', 'Thêm sản phẩm thành công');
+
     }
 
     public function edit(Product $product)
@@ -117,25 +84,8 @@ class ProductController extends Controller
     }
 
 
-    public function update(Request $request, Product $product)
+    public function update(UpdateProductRequest $request, Product $product)
     {
-        if ($request->filled('price')) {
-            $request->merge([
-                'price' => str_replace([',','.'], '', $request->price)
-            ]);
-        }
-
-        $request->validate([
-            'name' => 'required',
-            'price' => 'required|numeric',
-            'category_id' => 'required',
-        ], [
-            'name.required' => 'Vui lòng nhập tên sản phẩm',
-            'price.required' => 'Vui lòng nhập giá sản phẩm',
-            'price.numeric' => 'Giá phải là số',
-            'category_id.required' => 'Vui lòng chọn danh mục',
-        ]);
-
         // tạo slug KHÔNG TRÙNG (trừ chính nó)
         $slug = Str::slug($request->name);
         $originalSlug = $slug;
@@ -150,17 +100,22 @@ class ProductController extends Controller
             $count++;
         }
 
-        $data = $request->only(['name','price','category_id','description','status']);
-        $data['slug'] = $slug;
-
-        if ($request->hasFile('thumbnail')) {
-            $data['thumbnail'] = $request->file('thumbnail')->store('products','public');
-        }
-
-        $product->update($data);
+        $this->productService->updateProduct($product, $request);
 
         return redirect()->route('admin.products.index')
             ->with('success','Cập nhật sản phẩm thành công');
+
+        // $data = $request->only(['name','price','category_id','description','status']);
+        // $data['slug'] = $slug;
+
+        // if ($request->hasFile('thumbnail')) {
+        //     $data['thumbnail'] = $request->file('thumbnail')->store('products','public');
+        // }
+
+        // $product->update($data);
+
+        // return redirect()->route('admin.products.index')
+        //     ->with('success','Cập nhật sản phẩm thành công');
     }
 
     public function toggleStatus($id)
